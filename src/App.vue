@@ -1,9 +1,5 @@
-<script setup lang="ts">
-import { Button as VanButton } from 'vant'
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <van-button>按钮</van-button>
+  <router-view></router-view>
 </template>
-
-<style scoped></style>

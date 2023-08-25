@@ -1,10 +1,10 @@
 import { useUserStore } from '@/stores'
 import router from '@/router'
-import axios from 'axios'
+import axios, { type Method } from 'axios'
 import { Toast } from 'vant'
 
 // 1. 新axios实例，基础配置
-const baseURL = 'https://consult-api.itheima.net/'
+const baseURL = ''
 const instance = axios.create({
   baseURL,
   timeout: 10000
@@ -57,7 +57,7 @@ type Data<T> = {
   data: T
 }
 // 4. 请求工具函数
-const request = <T>(url: string, method = 'get', submitData?: object) => {
+const request = <T>(url: string, method: Method = 'GET', submitData?: object) => {
   return instance.request<T, Data<T>>({
     url,
     method,
