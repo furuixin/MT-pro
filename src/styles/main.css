@@ -13,4 +13,7 @@
   --cp-bg: #F6F7F9;
   --cp-price: #EB5757;
   --van-primary-color: var(--cp-primary);
+  --van-cell-vertical-padding: 14px;
+  --van-checkbox-size: 14px;
+  --van-button-normal-font-size: 16px;
 }
