@@ -9,8 +9,12 @@ import { VantResolver } from 'unplugin-vue-components/resolvers'
 export default defineConfig({
   plugins: [
     vue(),
+    // 自动导入的插件，解析器可以是 vant element and-vue
     Components({
-      resolvers: [VantResolver()]
+      // 不开起自动生成声明文件 dts: false
+      dts: false,
+      // 原因：Toast Confirm 这类组件的样式还是需要单独引入，样式全局引入了，关闭自动引入
+      resolvers: [VantResolver({ importStyle: false })]
     })
   ],
   resolve: {
