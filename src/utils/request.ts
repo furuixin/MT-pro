@@ -4,7 +4,7 @@ import axios, { type Method } from 'axios'
 import { Toast } from 'vant'
 
 // 1. 新axios实例，基础配置
-const baseURL = ''
+const baseURL = '/dev-api'
 const instance = axios.create({
   baseURL,
   timeout: 10000

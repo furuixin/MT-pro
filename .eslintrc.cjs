@@ -17,7 +17,7 @@ module.exports = {
         // tabWidth：tab是空格的情况下，是⼏个空格，选择2个
         tabWidth: 2,
         // printWidth：当⾏字符的⻓度，推荐80，也有⼈喜欢100或者120
-        printWidth: 100,
+        printWidth: 120,
         // singleQuote：使⽤单引号还是双引号，选择true，使⽤单引号；
         singleQuote: true,
         // trailingComma：在多⾏输⼊的尾逗号是否添加，设置为 `none`；
