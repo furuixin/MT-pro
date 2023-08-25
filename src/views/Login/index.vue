@@ -36,7 +36,7 @@ const agree = ref(false)
     <div class="login-other">
       <van-divider>第三方登录</van-divider>
       <div class="icon">
-        <img src="@/assets/qq.svg" alt="" />
+        <img src="@/assets/qq.svg" alt="qq" />
       </div>
     </div>
   </div>
