@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onUnmounted } from 'vue'
-import { showToast, type FormInstance } from 'vant'
+import { showToast } from 'vant'
 import cpNavBar from '@/components/cp-nav-bar.vue'
 import cpIcon from '@/components/cpIcon.vue'
 import { loginByPassword, sendMobileCode, loginByMobile } from '@/services/user'
@@ -22,7 +22,6 @@ const code = ref('')
 const time = ref(0)
 // 定时器
 let timeId: number
-const form = ref<FormInstance>()
 // 是否同意隐私条款用户协议
 const agree = ref<boolean>(false)
 // pinia数据
@@ -36,22 +35,11 @@ const send = async () => {
   // 已经倒计时time的值大于0，此时不能发送验证码
   if (time.value > 0) return
   // 验证不通过报错，阻止程序继续执行
-  console.log(1)
-
-  await form.value?.validate('mobile')
-  console.log(2)
-
   await sendMobileCode(mobile.value, 'login')
-  console.log(3)
-
   showToast({ type: 'success', message: '发送成功' })
-  console.log(4)
-
   time.value = 60
   // 倒计时
   clearInterval(timeId)
-  console.log(5)
-
   timeId = window.setInterval(() => {
     time.value--
     if (time.value <= 0) window.clearInterval(timeId)
