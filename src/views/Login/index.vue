@@ -1,30 +1,77 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { showToast } from 'vant'
+import { ref, onUnmounted } from 'vue'
+import { showToast, type FormInstance } from 'vant'
 import cpNavBar from '@/components/cp-nav-bar.vue'
 import cpIcon from '@/components/cpIcon.vue'
-import { loginByPassword } from '@/services/user'
+import { loginByPassword, sendMobileCode, loginByMobile } from '@/services/user'
 import { useUserStore } from '@/stores'
 import { useRoute, useRouter } from 'vue-router'
-import { mobileRules, passwordRules } from '@/utils/rules'
+import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
 
-const password = ref<string>('')
+// 手机号码
 const mobile = ref<string>('')
+// 密码
+const password = ref<string>('')
+// 密码显示隐藏
 const show = ref<boolean>(false)
+// true密码登录false短信验证
+const isPass = ref(true)
+// 验证码
+const code = ref('')
+// 验证码倒计时
+const time = ref(0)
+// 定时器
+let timeId: number
+const form = ref<FormInstance>()
+// 是否同意隐私条款用户协议
 const agree = ref<boolean>(false)
+// pinia数据
 const store = useUserStore()
+// 路由信息
 const router = useRouter()
 const route = useRoute()
+
+// 发送验证码
+const send = async () => {
+  // 已经倒计时time的值大于0，此时不能发送验证码
+  if (time.value > 0) return
+  // 验证不通过报错，阻止程序继续执行
+  console.log(1)
+
+  await form.value?.validate('mobile')
+  console.log(2)
+
+  await sendMobileCode(mobile.value, 'login')
+  console.log(3)
+
+  showToast({ type: 'success', message: '发送成功' })
+  console.log(4)
+
+  time.value = 60
+  // 倒计时
+  clearInterval(timeId)
+  console.log(5)
+
+  timeId = window.setInterval(() => {
+    time.value--
+    if (time.value <= 0) window.clearInterval(timeId)
+  }, 1000)
+}
+// 当页面卸载的时候, 清除定时器
+onUnmounted(() => {
+  clearInterval(timeId)
+})
 
 // 表单提交
 const login = async () => {
   if (!agree.value) return showToast('请勾选我已同意')
   // 验证完毕，进行登录
-  const res = await loginByPassword(mobile.value, password.value)
-  console.log(res)
+  const res = isPass.value
+    ? await loginByPassword(mobile.value, password.value)
+    : await loginByMobile(mobile.value, code.value)
+  // 存用户信息
   store.setUser(res.data)
   // 如果有回跳地址就进行回跳，没有跳转到个人中心
-  console.log(route.query.returnUrl)
   router.push((route.query.returnUrl as string) || '/user')
   showToast({ type: 'success', message: '登录成功' })
 }
@@ -33,18 +80,31 @@ const login = async () => {
   <div class="login-page">
     <cp-nav-bar right-text="注册" @click-right="$router.push('/register')"></cp-nav-bar>
     <div class="login-head">
-      <h3>密码登录</h3>
-      <a href="javascript:;">
-        <span>短信验证码登录</span>
+      <h3>{{ isPass ? '密码登录' : '短信验证码登录' }}</h3>
+      <a href="javascript:;" @click="isPass = !isPass">
+        <span>{{ !isPass ? '密码登录' : '短信验证码登录' }}</span>
         <van-icon name="arrow"></van-icon>
       </a>
     </div>
     <!-- form 表单 -->
     <van-form autocomplete="off" @submit="login">
-      <van-field v-model="mobile" :rules="mobileRules" placeholder="请输入手机号" type="tel"></van-field>
-      <van-field v-model="password" :rules="passwordRules" placeholder="请输入密码" :type="show ? 'text' : 'password'">
+      <van-field v-model="mobile" name="mobile" :rules="mobileRules" placeholder="请输入手机号" type="tel"></van-field>
+      <van-field
+        v-if="isPass"
+        v-model="password"
+        :rules="passwordRules"
+        placeholder="请输入密码"
+        :type="show ? 'text' : 'password'"
+      >
         <template #button>
           <cp-icon :name="`login-eye-${show ? 'on' : 'off'}`" @click="show = !show"></cp-icon>
+        </template>
+      </van-field>
+      <van-field v-else v-model="code" :rules="codeRules" placeholder="短信验证码">
+        <template #button>
+          <span class="btn-send" :class="{ active: time > 0 }" @click="send">
+            {{ time > 0 ? `${time}s后再次发送` : '发送验证码' }}
+          </span>
         </template>
       </van-field>
       <div class="cp-cell">
@@ -127,6 +187,12 @@ const login = async () => {
         color: var(--cp-primary);
         padding: 0 5px;
       }
+    }
+  }
+  .btn-send {
+    color: var(--cp-primary);
+    &.active {
+      color: rgba(22, 194, 163, 0.5);
     }
   }
 }

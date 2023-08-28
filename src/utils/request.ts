@@ -1,7 +1,7 @@
 import { useUserStore } from '@/stores'
 import router from '@/router'
 import axios, { type Method } from 'axios'
-import { Toast } from 'vant'
+import { showToast } from 'vant'
 
 // 1. 新axios实例，基础配置
 const baseURL = '/dev-api'
@@ -31,8 +31,7 @@ instance.interceptors.response.use(
   (res) => {
     // 后台约定，响应成功，但是code不是10000，是业务逻辑失败
     if (res.data?.code !== 10000) {
-      // Vant的Toast组件实际上是一个类（Class），通过使用new关键字创建实例对象才可以调用该类中定义的方法和属性。
-      new Toast(res.data?.message)
+      showToast({ type: 'success', message: res.data?.message })
       return Promise.reject(res.data)
     }
     // 业务逻辑成功(响应成功，且后台业务操作完毕)，返回响应数据，作为axios成功的结果
