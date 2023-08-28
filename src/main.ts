@@ -15,4 +15,5 @@ const app = createApp(App)
 app.use(pinia)
 app.use(router)
 
+import './permission'
 app.mount('#app')
