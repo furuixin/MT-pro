@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref, onUnmounted } from 'vue'
 import { showToast } from 'vant'
-import cpNavBar from '@/components/cp-nav-bar.vue'
-import cpIcon from '@/components/cpIcon.vue'
 import { loginByPassword, sendMobileCode, loginByMobile } from '@/services/user'
 import { useUserStore } from '@/stores'
 import { useRoute, useRouter } from 'vue-router'

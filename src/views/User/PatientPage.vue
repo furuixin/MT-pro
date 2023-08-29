@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import cpNavBar from '@/components/cp-nav-bar.vue'
-import cpIcon from '@/components/cpIcon.vue'
 import { getPatientList } from '@/services/user'
 import type { PatientList } from '@/types/user'
 import { onMounted, ref } from 'vue'
@@ -14,6 +12,16 @@ const loadList = async () => {
 onMounted(() => {
   loadList()
 })
+
+const show = ref(false)
+const showPopup = () => {
+  show.value = true
+}
+const gender = ref(1)
+const options = [
+  { label: '男', value: 1 },
+  { label: '女', value: 0 }
+]
 </script>
 
 <template>
@@ -44,6 +52,10 @@ onMounted(() => {
       </div>
       <div class="patient-tip">最多可添加 6 人</div>
     </div>
+    <CpRadioBtn :options="options" v-model="gender"></CpRadioBtn>
+    <van-popup v-model:show="show" position="right">
+      <cp-nav-bar title="添加患者" right-text="保存"></cp-nav-bar>
+    </van-popup>
   </div>
 </template>
 
@@ -110,6 +122,12 @@ onMounted(() => {
     .patient-tip {
       color: var(--cp-tag);
       padding: 12px 0;
+    }
+  }
+  ::v-deep() {
+    .van-popup {
+      width: 80%;
+      height: 100%;
     }
   }
 }
