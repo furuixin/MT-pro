@@ -19,11 +19,20 @@ const router = createRouter({
         { path: '/user', component: () => import('@/views/User/index.vue'), meta: { title: '个人中心' } }
       ]
     },
-    { path: '/order', component: () => import('@/views/Order/index.vue'), meta: { title: '订单' } },
+    {
+      path: '/order',
+      component: () => import('@/views/Order/index.vue'),
+      meta: { title: '订单' }
+    },
     {
       path: '/register',
-      name: '注册',
-      component: () => import('@/views/Register/index.vue')
+      component: () => import('@/views/Register/index.vue'),
+      meta: { title: '注册' }
+    },
+    {
+      path: '/user/patient',
+      component: () => import('@/views/User/PatientPage.vue'),
+      meta: { title: '家庭档案' }
     }
   ]
 })
