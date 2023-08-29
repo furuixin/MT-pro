@@ -5,7 +5,7 @@ const router = createRouter({
   routes: [
     {
       path: '/login',
-      name: 'login',
+      name: '登录',
       component: () => import('@/views/Login/index.vue')
     },
     {
@@ -19,9 +19,10 @@ const router = createRouter({
         { path: '/user', component: () => import('@/views/User/index.vue'), meta: { title: '个人中心' } }
       ]
     },
+    { path: '/order', component: () => import('@/views/Order/index.vue'), meta: { title: '订单' } },
     {
       path: '/register',
-      name: 'register',
+      name: '注册',
       component: () => import('@/views/Register/index.vue')
     }
   ]

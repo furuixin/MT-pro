@@ -57,15 +57,15 @@ const logout = async () => {
           <p>收藏</p>
         </van-col>
         <van-col span="6">
-          <p>0</p>
+          <p>{{ user?.likeNumber }}</p>
           <p>关注</p>
         </van-col>
         <van-col span="6">
-          <p>0</p>
+          <p>{{ user?.score }}</p>
           <p>积分</p>
         </van-col>
         <van-col span="6">
-          <p>0</p>
+          <p>{{ user?.couponNumber }}</p>
           <p>优惠券</p>
         </van-col>
       </van-row>
