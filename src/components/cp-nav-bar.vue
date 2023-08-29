@@ -4,6 +4,10 @@ import { useRouter } from 'vue-router'
 //1. 一定有的功能：返回图标，返回效果，固定定位（组件内部实现）
 const router = useRouter()
 const onClickLeft = () => {
+  //如果有传自定义事件就执行 back 对应的函数。
+  if (props.back) {
+    return props.back()
+  }
   // 判断历史记录中是否有回退
   if (history.state?.back) {
     router.back()
@@ -13,9 +17,10 @@ const onClickLeft = () => {
 }
 
 // 2. 使用组件时候才能确定的功能：标题，右侧文字，点击右侧文字行为（props传入）
-defineProps<{
+const props = defineProps<{
   title?: string
   rightText?: string
+  back?: () => void
 }>()
 
 // 点击右侧文字响应事件
