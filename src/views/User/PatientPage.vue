@@ -59,6 +59,7 @@ const submit = async () => {
   if (!patient.value.name) return showToast('请输入真实姓名')
   if (!patient.value.idCard) return showToast('请输入身份证号')
   const validate = new Validator()
+  console.log(validate.getInfo(patient.value.idCard))
   if (!validate.isValid(patient.value.idCard)) return showToast('身份证格式错误')
   const { sex } = validate.getInfo(patient.value.idCard)
   if (patient.value.gender !== sex) return showToast('性别和身份证不符')
