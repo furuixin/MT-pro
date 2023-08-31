@@ -1,26 +1,19 @@
 <script setup lang="ts">
 import DoctorCard from './DoctorCard.vue'
-// import { onMounted, onUnmounted, ref } from 'vue'
-// // 设置宽度
-// const width = ref(0)
-// // 宽度等于页面宽度
-// const setWidth = () => {
-//   width.value = window.innerWidth
-// }
-// // 组件挂载到DOM后，在setup()函数执行之后执行
-// onMounted(() => {
-//   setWidth()
-//   // 只要窗口大小发生像素变化就会触发，resize是事件类型,如click或mousedown
-//   window.addEventListener('resize', setWidth)
-// })
-// // 组件被销毁之前执行
-// onUnmounted(() => {
-//   // 移出事件监听
-//   window.removeEventListener('resize', setWidth)
-// })
-
+// 实时获取当前屏幕宽度
 import { useWindowSize } from '@vueuse/core'
 const { width } = useWindowSize()
+
+// 获取推荐关注的医生
+import { getDoctorPage } from '@/services/consult'
+import type { DoctorList } from '@/types/consult'
+import { onMounted, ref } from 'vue'
+const list = ref<DoctorList>()
+const loadData = async () => {
+  const res = await getDoctorPage({ current: 1, pageSize: 5 })
+  list.value = res.data.rows
+}
+onMounted(() => loadData())
 </script>
 
 <template>
@@ -31,9 +24,9 @@ const { width } = useWindowSize()
     </div>
     <div class="body">
       <!-- 设置单个滑块的宽度为固定屏幕比例，去除指示器原点，关闭循环滚动 -->
-      <van-swipe :width="width" :show-indicators="false" :loop="false">
-        <van-swipe-item v-for="item in 5" :key="item">
-          <doctor-card />
+      <van-swipe :width="(150 / 375) * width" :show-indicators="false" :loop="false">
+        <van-swipe-item v-for="item in list" :key="item.id">
+          <doctor-card :item="item" />
         </van-swipe-item>
       </van-swipe>
     </div>
@@ -46,9 +39,9 @@ const { width } = useWindowSize()
   height: 250px;
   .head {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     height: 45px;
-    align-items: center;
     padding: 0 15px;
     font-size: 13px;
     > a {

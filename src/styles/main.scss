@@ -49,3 +49,7 @@ h1,h2,h3,h4,h5,h6,p,ul,ol {
     padding: 0 15px;
   }
 }
+// 进度条颜色更改
+#nprogress .bar {
+  background-color: var(--cp-primary) !important;
+}
