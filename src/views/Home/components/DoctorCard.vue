@@ -7,7 +7,7 @@ defineProps<{
 }>()
 
 // 关注逻辑
-const { loading, follow } = useFollow('knowledge')
+const { loading, follow } = useFollow()
 </script>
 <template>
   <div class="doctor-card">
