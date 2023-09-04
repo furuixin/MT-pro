@@ -2,9 +2,16 @@
 import { ref } from 'vue'
 import KnowledgeList from './components/KnowledgeList.vue'
 import FollowDoctor from './components/FollowDoctor.vue'
-import type { KnowledgeType } from '@/types/consult'
 
+// tabs选中
+import type { KnowledgeType } from '@/types/consult'
 const active = ref<KnowledgeType>('recommend')
+
+//点击极速问诊记录问诊类型
+import { useConsultStore } from '@/stores'
+import { ConsultType } from '@/enums'
+
+const store = useConsultStore()
 </script>
 
 <template>
@@ -25,7 +32,8 @@ const active = ref<KnowledgeType>('recommend')
           </router-link>
         </van-col>
         <van-col span="8">
-          <router-link to="/consult/fast" class="nav">
+          <!-- 枚举实际应用，阅读是问诊类型.急速，实际只是一个数字2 -->
+          <router-link to="/consult/fast" @click="store.setType(ConsultType.Fast)" class="nav">
             <cp-icon name="home-graphic"></cp-icon>
             <p class="title">极速问诊</p>
             <p class="desc">20s医生极速回复</p>
@@ -92,9 +100,11 @@ const active = ref<KnowledgeType>('recommend')
 .home-page {
   padding-bottom: 50px;
 }
+
 .home-header {
   height: 100px;
   position: relative;
+
   // ::before用来增加背景
   &::before {
     content: '';
@@ -107,9 +117,11 @@ const active = ref<KnowledgeType>('recommend')
     border-bottom-left-radius: 150px 20px;
     border-bottom-right-radius: 150px 20px;
   }
+
   .con {
     position: relative;
     padding: 0 15px;
+
     > h1 {
       font-size: 18px;
       color: #fff;
@@ -118,6 +130,7 @@ const active = ref<KnowledgeType>('recommend')
       line-height: 1;
       padding-left: 5px;
     }
+
     .search {
       height: 40px;
       border-radius: 20px;
@@ -128,6 +141,7 @@ const active = ref<KnowledgeType>('recommend')
       padding: 0 20px;
       color: var(--cp-dark);
       font-size: 13px;
+
       .cp-icon {
         font-size: 16px;
         margin-right: 5px;
@@ -135,30 +149,37 @@ const active = ref<KnowledgeType>('recommend')
     }
   }
 }
+
 .home-navs {
   padding: 10px 15px 0 15px;
+
   .nav {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 10px 0;
+
     .cp-icon {
       font-size: 48px;
     }
+
     .title {
       font-weight: 500;
       margin-top: 5px;
       color: var(--cp-text1);
     }
+
     .desc {
       font-size: 11px;
       color: var(--cp-tag);
       margin-top: 2px;
     }
+
     &.min {
       .cp-icon {
         font-size: 31px;
       }
+
       .title {
         font-size: 13px;
         color: var(--cp-text2);
@@ -167,9 +188,11 @@ const active = ref<KnowledgeType>('recommend')
     }
   }
 }
+
 .home-banner {
   padding: 10px 15px;
   height: 100px;
+
   img {
     width: 100%;
     height: 100%;

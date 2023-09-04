@@ -9,6 +9,15 @@ const list = ref<PatientList>([])
 const loadList = async () => {
   const res = await getPatientList()
   list.value = res.data
+  // 设置默认选中的ID，当你是选择患者的时候，且有患者信息的时候
+  if (isChange.value && list.value.length) {
+    // 找到默认就诊人对象
+    const defPatient = list.value.find((item) => item.defaultFlag === 1)
+    // 如果有默认就诊人就选中默认就诊人
+    if (defPatient) patientId.value = defPatient.id
+    // 不然的话选中第一个就诊人
+    else patientId.value = list.value[0].id
+  }
 }
 onMounted(() => {
   loadList()
@@ -85,13 +94,47 @@ const remove = async () => {
     showToast({ type: 'success', message: '删除成功' })
   }
 }
+
+//问诊时的选择患者兼容
+import { useRoute, useRouter } from 'vue-router'
+import { useConsultStore } from '@/stores'
+const store = useConsultStore()
+// 是否处于是选择患者
+const route = useRoute()
+const isChange = computed(() => route.query.isChange === '1')
+// 点击选中效果
+const patientId = ref<string>()
+const selectedPatient = (item: Patient) => {
+  // 如果当前处于问诊时才能执行选中
+  if (isChange.value) {
+    patientId.value = item.id
+  }
+}
+// 选择完毕下一步
+const router = useRouter()
+const next = async () => {
+  if (!patientId.value) return showToast('请选就诊择患者')
+  store.setPatient(patientId.value)
+  router.push('/consult/pay')
+}
 </script>
 
 <template>
   <div class="patient-page">
-    <cpNavBar title="家庭档案"></cpNavBar>
+    <cpNavBar :title="isChange ? '选择患者' : '家庭档案'"></cpNavBar>
+    <!-- 问诊的头部提示 -->
+    <div class="patient-change" v-if="isChange">
+      <h3>请选择患者信息</h3>
+      <p>以便医生给出更准确的治疗，信息仅医生可见</p>
+    </div>
     <div class="patient-list">
-      <div class="patient-item" v-for="item in list" :key="item.id">
+      <div
+        class="patient-item"
+        v-for="item in list"
+        :key="item.id"
+        @click="selectedPatient(item)"
+        :class="{ selected: patientId === item.id }"
+      >
         <div class="info">
           <span class="name">{{ item.name }}</span>
           <!--
@@ -141,14 +184,20 @@ const remove = async () => {
         <van-action-bar-button @click="remove">删除</van-action-bar-button>
       </van-action-bar>
     </van-popup>
+    <!-- 问诊的底部提交按钮 -->
+    <div class="patient-next" v-if="isChange">
+      <van-button type="primary" @click="next" round block>下一步</van-button>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .patient-page {
   padding: 46px 0 80px;
+
   .patient-list {
     padding: 15px;
+
     .patient-item {
       display: flex;
       align-items: center;
@@ -160,26 +209,31 @@ const remove = async () => {
       border: 1px solid var(--cp-bg);
       transition: all 0.3s;
       overflow: hidden;
+
       .info {
         display: flex;
         flex-wrap: wrap;
         flex: 1;
+
         span {
           color: var(--cp-tip);
           margin-right: 20px;
           line-height: 30px;
+
           &.name {
             font-size: 16px;
             color: var(--cp-text1);
             width: 80px;
             margin-right: 0;
           }
+
           &.id {
             color: var(--cp-text2);
             width: 180px;
           }
         }
       }
+
       .tag {
         position: absolute;
         top: 21px;
@@ -194,30 +248,40 @@ const remove = async () => {
         background-color: var(--cp-primary);
       }
     }
+
     .patient-add {
       padding: 15px 0;
       text-align: center;
       border-radius: 8px;
       color: var(--cp-primary);
       background-color: var(--cp-bg);
+
       .cp-icon {
         font-size: 24px;
       }
     }
+
     .patient-tip {
       color: var(--cp-tag);
       padding: 12px 0;
     }
+    .selected {
+      border-color: var(--cp-primary);
+      background-color: var(--cp-plain);
+    }
   }
+
   ::v-deep() {
     .van-popup {
       width: 100%;
       height: 100%;
       padding-top: 46px;
       box-sizing: border-box;
+
       .van-action-bar {
         padding: 0 10px;
         margin-bottom: 10px;
+
         .van-button {
           font-weight: 500;
           color: var(--cp-price);
@@ -225,6 +289,30 @@ const remove = async () => {
         }
       }
     }
+  }
+
+  .patient-change {
+    padding: 15px;
+
+    > h3 {
+      font-weight: normal;
+      margin-bottom: 5px;
+    }
+
+    > p {
+      color: var(--cp-text3);
+    }
+  }
+
+  .patient-next {
+    padding: 15px;
+    background-color: #fff;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 80px;
+    box-sizing: border-box;
   }
 }
 </style>
