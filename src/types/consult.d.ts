@@ -92,7 +92,7 @@ export type DoctorPage = {
 export type FollowType = 'doc' | 'knowledge' | 'topic' | 'disease'
 
 /*急速问诊模块*/
-import { ConsultType, IllnessTime } from '@/enums'
+import { ConsultType, IllnessTime, OrderType } from '@/enums'
 
 // 图片列表
 export type Image = {
@@ -146,6 +146,7 @@ export type TopDep = SubDep & {
 // pick是ts的一个工具类型，作用是从参数一的类中挑选出指定属性
 export type ConsultIllness = Pick<PartialConsult, 'illnessDesc' | 'illnessTime' | 'consultFlag' | 'pictures'>
 
+import type { Patient } from './user'
 // 问诊订单预支付传参
 export type ConsultOrderPreParams = Pick<PartialConsult, 'type' | 'illnessType'>
 
@@ -161,4 +162,52 @@ export type ConsultOrderPreData = {
   payment: number
   // 实付款
   actualPayment: number
+}
+
+// 问诊订单单项信息
+export type ConsultOrderItem = Consult & {
+  // 创建时间
+  createTime: string
+  // 医生信息
+  docInfo?: Doctor
+  // 患者信息
+  patientInfo: Patient
+  // 订单编号
+  orderNo: string
+  // 订单状态
+  status: OrderType
+  // 状态文字
+  statusValue: string
+  // 类型问诊文字
+  typeValue: string
+  // 倒计时时间
+  countdown: number
+  // 处方ID
+  prescriptionId?: string
+  // 评价ID
+  evaluateId: number
+  // 应付款
+  payment: number
+  // 优惠券抵扣
+  couponDeduction: number
+  // 积分抵扣
+  pointDeduction: number
+  // 实付款
+  actualPayment: number
+}
+
+//问诊记录的接口参数
+export type ConsultOrderListParams = PageParams & {
+  // 问诊记录类型
+  type: ConsultType
+}
+
+//带分页问诊订单类型
+export type ConsultOrderPage = {
+  // 总页数
+  pageTotal: number
+  // 总条数
+  total: number
+  // 列表数据
+  rows: ConsultOrderItem[]
 }

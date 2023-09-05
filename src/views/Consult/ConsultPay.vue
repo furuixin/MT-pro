@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getConsultOrderPre, createConsultOrder, getConsultOrderPayUrl } from '@/services/consult'
+import { getConsultOrderPre, createConsultOrder } from '@/services/consult'
 import { getPatientDetail } from '@/services/user'
 import { useConsultStore } from '@/stores'
 import type { ConsultOrderPreData } from '@/types/consult'
@@ -56,21 +56,19 @@ const agree = ref(false)
 const show = ref(false)
 // 按钮是否显示为加载状态
 const loading = ref(false)
-// 当前选择支付方式，0为微信，1为支付宝
-const paymentMethod = ref<0 | 1>()
 // 本次支付的订单id
 const orderId = ref('')
 // 外层立即支付生成订单id
 const submit = async () => {
   if (!agree.value) return showToast('请勾选我已同意支付协议')
-  // 打开弹窗
-  show.value = true
   // 按钮加载状态
   loading.value = true
   // 将信息发送给后台获取订单id
   const res = await createConsultOrder(store.consult)
   // id赋值给变量
   orderId.value = res.data.id
+  // 打开弹窗
+  show.value = true
   // 按钮加载状态结束
   loading.value = false
   // 清空pinia内的问诊信息
@@ -100,19 +98,6 @@ const onClose = () => {
       router.push('/user/consult')
       return true
     })
-}
-// 跳转支付
-const pay = async () => {
-  if (paymentMethod.value === undefined) return showToast('请选择支付方式')
-  showToast({ type: 'loading', message: '跳转支付' })
-  // 将订单id和选择的支付方式以及回跳地址发送给后端
-  const res = await getConsultOrderPayUrl({
-    orderId: orderId.value,
-    paymentMethod: paymentMethod.value,
-    payCallback: 'http://localhost:5173/room'
-  })
-  // 调转到支付页面
-  window.location.href = res.data.payUrl
 }
 </script>
 
@@ -149,35 +134,7 @@ const pay = async () => {
       @click="submit"
     />
   </div>
-  <!--
-    close-on-popstate：是否在页面回退时自动关闭
-    closeable：是否显示关闭图标
-    before-close:关闭前的回调函数，返回false可阻止关闭
-   -->
-  <van-action-sheet
-    v-model:show="show"
-    title="选择支付方式"
-    :close-on-popstate="false"
-    :closeable="false"
-    :before-close="onClose"
-  >
-    <div class="pay-type">
-      <p class="amount">￥{{ payInfo?.actualPayment.toFixed(2) }}</p>
-      <van-cell-group>
-        <van-cell title="微信支付" @click="paymentMethod = 0">
-          <template #icon><cp-icon name="consult-wechat" /></template>
-          <template #extra><van-checkbox :checked="paymentMethod === 0" /></template>
-        </van-cell>
-        <van-cell title="支付宝支付" @click="paymentMethod = 1">
-          <template #icon><cp-icon name="consult-alipay" /></template>
-          <template #extra><van-checkbox :checked="paymentMethod === 1" /></template>
-        </van-cell>
-      </van-cell-group>
-      <div class="btn">
-        <van-button type="primary" round block @click="pay">立即支付</van-button>
-      </div>
-    </div>
-  </van-action-sheet>
+  <cp-pay-sheet v-model:show="show" :order-id="orderId" :actualPayment="payInfo?.actualPayment!" :onClose="onClose" />
 </template>
 
 <style lang="scss" scoped>
@@ -240,27 +197,6 @@ const pay = async () => {
     .van-submit-bar__button {
       font-weight: normal;
       width: 160px;
-    }
-  }
-}
-.pay-type {
-  .amount {
-    padding: 20px;
-    text-align: center;
-    font-size: 16px;
-    font-weight: bold;
-  }
-  .btn {
-    padding: 15px;
-  }
-  .van-cell {
-    align-items: center;
-    .cp-icon {
-      margin-right: 10px;
-      font-size: 18px;
-    }
-    .van-checkbox :deep(.van-checkbox__icon) {
-      font-size: 16px;
     }
   }
 }
