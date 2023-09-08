@@ -1,18 +1,9 @@
 <script setup lang="ts">
 import type { ConsultIllness } from '@/types/consult'
 import { ref, computed, onMounted } from 'vue'
-import { IllnessTime } from '@/enums'
 
-const timeOptions = [
-  { label: '一周内', value: IllnessTime.Week },
-  { label: '一月内', value: IllnessTime.Month },
-  { label: '半年内', value: IllnessTime.HalfYear },
-  { label: '大于半年', value: IllnessTime.More }
-]
-const flagOptions = [
-  { label: '就诊过', value: 0 },
-  { label: '没就诊过', value: 1 }
-]
+// 表单的患病时间和是否问诊过数组
+import { timeOptions, flagOptions } from '@/utils/filter'
 const form = ref<ConsultIllness>({
   illnessDesc: '',
   illnessTime: undefined,

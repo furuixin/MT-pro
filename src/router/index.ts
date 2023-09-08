@@ -57,7 +57,11 @@ const router = createRouter({
     {
       path: '/room',
       component: () => import('@/views/Room/index.vue'),
-      meta: { title: '问诊室' }
+      meta: { title: '问诊室' },
+      beforeEnter(to) {
+        // 支付回调时判断支付成功了没，其他方式进入时没有payResult这个属性
+        if (to.query.payResult === 'false') return '/user/consult'
+      }
     },
     {
       path: '/user/consult',
@@ -68,6 +72,11 @@ const router = createRouter({
       path: '/user/consult/:id',
       component: () => import('@/views/User/ConsultDetail.vue'),
       meta: { title: '问诊详情' }
+    },
+    {
+      path: '/order/pay',
+      component: () => import('@/views/Order/OrderPay.vue'),
+      meta: { title: '药品支付' }
     }
   ]
 })
