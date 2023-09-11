@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 // 封装关注逻辑，规范 useXxx，表示使用某功能
 import { followDoctor } from '@/services/consult'
@@ -73,4 +73,22 @@ export const useDeleteOrder = (cb: () => void) => {
     }
   }
   return { deleteLoading, deleteConsultOrder }
+}
+
+// 获取订单详情数据
+import { getMedicalOrderDetail } from '@/services/order'
+import type { OrderDetail } from '@/types/order'
+export const useOrderDetail = (id: string) => {
+  const loading = ref(false)
+  const order = ref<OrderDetail>()
+  onMounted(async () => {
+    loading.value = true
+    try {
+      const res = await getMedicalOrderDetail(id)
+      order.value = res.data
+    } finally {
+      loading.value = false
+    }
+  })
+  return { order, loading }
 }

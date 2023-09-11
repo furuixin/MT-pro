@@ -129,7 +129,12 @@ const show = ref(false)
       </van-button>
       <van-button type="primary" round to="/">咨询其他医生</van-button>
     </div>
-    <cp-pay-sheet v-model:show="show" :order-id="String(route.params.id)" :actualPayment="orderInfo.actualPayment" />
+    <cp-pay-sheet
+      payCallback="http://localhost:5173/order/pay/result"
+      v-model:show="show"
+      :order-id="String(route.params.id)"
+      :actualPayment="orderInfo.actualPayment"
+    />
   </div>
   <div class="consult-detail-page" v-else>
     <cp-nav-bar title="问诊详情" />

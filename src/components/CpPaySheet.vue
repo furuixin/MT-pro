@@ -10,6 +10,7 @@ const props = defineProps<{
   orderId: string
   actualPayment: number
   onClose?: () => void
+  payCallback: string
 }>()
 
 // 提醒父组件更新show的状态
@@ -26,8 +27,9 @@ const pay = async () => {
   const res = await getConsultOrderPayUrl({
     orderId: props.orderId,
     paymentMethod: paymentMethod.value,
-    payCallback: 'http://localhost:5173/room'
+    payCallback: props.payCallback
   })
+  console.log(res)
   // 调转到支付页面
   window.location.href = res.data.payUrl
 }

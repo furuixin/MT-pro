@@ -134,7 +134,13 @@ const onClose = () => {
       @click="submit"
     />
   </div>
-  <cp-pay-sheet v-model:show="show" :order-id="orderId" :actualPayment="payInfo?.actualPayment!" :onClose="onClose" />
+  <cp-pay-sheet
+    payCallback="http://localhost:5173/room"
+    v-model:show="show"
+    :order-id="orderId"
+    :actualPayment="payInfo?.actualPayment!"
+    :onClose="onClose"
+  />
 </template>
 
 <style lang="scss" scoped>
