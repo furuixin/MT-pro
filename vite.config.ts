@@ -12,6 +12,7 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './',
   plugins: [
     vue({
       // 开启后可将解构props转换为响应式，仅适用于 Vue 3.3 及以下版本，3.4将会移除

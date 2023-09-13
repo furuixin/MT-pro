@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { OrderType } from '@/enums'
 import type { ConsultOrderItem } from '@/types/consult'
 const { item } = defineProps<{ item: ConsultOrderItem }>()

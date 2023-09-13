@@ -130,7 +130,7 @@ const show = ref(false)
       <van-button type="primary" round to="/">咨询其他医生</van-button>
     </div>
     <cp-pay-sheet
-      payCallback="http://localhost:5173/order/pay/result"
+      payCallback="order/pay/result"
       v-model:show="show"
       :order-id="String(route.params.id)"
       :actualPayment="orderInfo.actualPayment"

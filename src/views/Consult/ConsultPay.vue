@@ -135,7 +135,7 @@ const onClose = () => {
     />
   </div>
   <cp-pay-sheet
-    payCallback="http://localhost:5173/room"
+    payCallback="room"
     v-model:show="show"
     :order-id="orderId"
     :actualPayment="payInfo?.actualPayment!"

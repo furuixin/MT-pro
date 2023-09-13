@@ -27,7 +27,9 @@ const pay = async () => {
   const res = await getConsultOrderPayUrl({
     orderId: props.orderId,
     paymentMethod: paymentMethod.value,
-    payCallback: props.payCallback
+    payCallback:
+      (import.meta.env.MODE === 'development' ? 'http://localhost:5173/#/' : 'http://43.138.107.53/#/') +
+      props.payCallback
   })
   console.log(res)
   // 调转到支付页面
@@ -71,15 +73,19 @@ const pay = async () => {
     font-size: 16px;
     font-weight: bold;
   }
+
   .btn {
     padding: 15px;
   }
+
   .van-cell {
     align-items: center;
+
     .cp-icon {
       margin-right: 10px;
       font-size: 18px;
     }
+
     .van-checkbox :deep(.van-checkbox__icon) {
       font-size: 16px;
     }
