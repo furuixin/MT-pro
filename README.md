@@ -44,3 +44,6 @@ pnpm build
 ```sh
 pnpm lint
 ```
+
+https://xiaomangjun.github.io/patient-h5-note/
+
